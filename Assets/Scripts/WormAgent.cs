@@ -48,8 +48,6 @@ public class WormAgent : Agent
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        transform.position += (Vector3)(direction * speed * Time.deltaTime);
-
         // 경로 추가
         float pathResolution = segmentDistance * 0.3f;
         if (path.Count == 0 || Vector2.Distance(path[path.Count - 1], wormHead.position) > pathResolution)
@@ -198,6 +196,60 @@ public class WormAgent : Agent
         else if (other.GetComponent<WormBodyScript>().wormBodyID != wormID && other.CompareTag("WormBody"))
         {
             Debug.Log("A");
+        }
+    }
+
+    private void Initialized()
+    {
+        
+    }
+
+    public override void OnEpisodeBegin()
+    {
+        bodyCount = 0;
+
+    }
+
+    float observationRadius = 10f;
+
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(transform.localPosition);
+
+        Collider2D[] nearObj = Physics2D.OverlapCircleAll(this.transform.position, observationRadius);
+        foreach(var obj in nearObj)
+        {
+            int tagValue = -1;
+            if (obj.CompareTag("Wall") && obj != null) tagValue = 0;
+            else if (obj.CompareTag("Food") && obj != null) tagValue = 1;
+
+            Vector2 relativePos = obj.transform.position - transform.position;
+            sensor.AddObservation(relativePos);
+            sensor.AddObservation(tagValue);
+        }
+    }
+
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        float moveX = actions.ContinuousActions[0]; // X축 이동 (-1 ~ 1)
+        float moveY = actions.ContinuousActions[1]; // Y축 이동 (-1 ~ 1)
+        Vector2 moveDirection = new Vector2(moveX, moveY).normalized;
+
+        transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
+
+        int isSpeedUP = actions.DiscreteActions[0];
+        if(isSpeedUP == 1)
+        {
+            Transform segment = null;
+            if (bodySegments.Count - 1 == -1) segment = wormHead;
+            else segment = bodySegments[bodySegments.Count - 1];
+
+            StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
+            speed = 10;
+        }
+        else if(isSpeedUP == 0)
+        {
+            speed = 5;
         }
     }
 }
