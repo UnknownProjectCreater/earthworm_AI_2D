@@ -186,7 +186,7 @@ public class WormPlayer : MonoBehaviour
         }
         else if (other.CompareTag("Wall"))
         {
-
+            Debug.Log("B");
         }
         else if (other.CompareTag("WormHead"))
         {

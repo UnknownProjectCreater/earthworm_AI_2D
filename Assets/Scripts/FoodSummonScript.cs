@@ -9,6 +9,9 @@ public class FoodSummonScript : MonoBehaviour
     public GameObject foodGroup;
     public int foodCount;
 
+    public float area_x;
+    public float area_y;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,8 +26,8 @@ public class FoodSummonScript : MonoBehaviour
 
     public void FoodSummon()
     {
-        float area_x = ground.transform.localScale.x / 2;
-        float area_y = ground.transform.localScale.y / 2;
+        area_x = ground.transform.localScale.x / 2;
+        area_y = ground.transform.localScale.y / 2;
 
         if (foodCount > this.transform.childCount)
         {

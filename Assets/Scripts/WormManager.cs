@@ -42,7 +42,7 @@ public class WormManager : MonoBehaviour
         }
     }
 
-    void DictSet()
+    public void DictSet()
     {
         WormScore[WormID[0]] = 0;
         WormScore[WormID[1]] = 0;
@@ -58,12 +58,12 @@ public class WormManager : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             WormScore[ID] -= 0.5f;
-            GameObject foodPiece = Instantiate(food, foodSpawnPosition.position, Quaternion.identity, foodSpawnGroup);
-            foodPiece.GetComponent<FoodScript>().point = 0.5f;
-            Renderer foodPrefabRend = foodPiece.GetComponent<Renderer>();
-            Color randomColor = new Color(Random.value, Random.value, Random.value);
-            foodPrefabRend.material.color = randomColor;
-            foodPiece.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            //GameObject foodPiece = Instantiate(food, foodSpawnPosition.position, Quaternion.identity, foodSpawnGroup);
+            //foodPiece.GetComponent<FoodScript>().point = 0.5f;
+            //Renderer foodPrefabRend = foodPiece.GetComponent<Renderer>();
+            //Color randomColor = new Color(Random.value, Random.value, Random.value);
+            //foodPrefabRend.material.color = randomColor;
+            //foodPiece.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
 
         yield return new WaitForSeconds(0.5f);

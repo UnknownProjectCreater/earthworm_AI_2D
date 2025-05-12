@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WormHead
   - Food
+  - Wall
   layers:
   - Default
   - TransparentFX
