@@ -50,12 +50,6 @@ public class WormAgent : Agent
 
     void FixedUpdate()
     {
-        if (moveDirection != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
-
         // 실제 이동
         transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
 
@@ -238,6 +232,10 @@ public class WormAgent : Agent
     {
         sensor.AddObservation(transform.localPosition);
 
+        float rad = transform.eulerAngles.z * Mathf.Deg2Rad;
+        sensor.AddObservation(Mathf.Sin(rad));
+        sensor.AddObservation(Mathf.Cos(rad));
+
         Collider2D[] nearObj = Physics2D.OverlapCircleAll(this.transform.position, observationRadius);
 
         int count = 0;
@@ -275,14 +273,7 @@ public class WormAgent : Agent
         float moveX = actions.ContinuousActions[0]; // X축 이동 (-1 ~ 1)
         float moveY = actions.ContinuousActions[1]; // Y축 이동 (-1 ~ 1)
 
-        if (moveDirection.magnitude > 0.1f)
-        {
-            moveDirection.Normalize(); // 방향 정규화
-        }
-        else
-        {
-            moveDirection = Vector2.zero; // 너무 작으면 정지
-        }
+        moveDirection = new Vector2(moveX, moveY).normalized;
 
         int isSpeedUP = actions.DiscreteActions[0];
         if(isSpeedUP == 1 && wormManager.WormScore[wormID] >= 1)

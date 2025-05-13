@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 216479799}
   - component: {fileID: 216479798}
   - component: {fileID: 216479797}
+  - component: {fileID: 216479802}
   m_Layer: 3
   m_Name: WormHead
   m_TagString: WormHead
@@ -283,7 +284,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
+  MaxStep: 1000
   bodyGroup: {fileID: 0}
   wormHead: {fileID: 0}
   foodGroup: {fileID: 1008883451}
@@ -311,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 32
+    VectorObservationSize: 34
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -442,6 +443,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &216479802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216479795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  TakeActionsBetweenDecisions: 1
 --- !u!1 &368516210
 GameObject:
   m_ObjectHideFlags: 0
