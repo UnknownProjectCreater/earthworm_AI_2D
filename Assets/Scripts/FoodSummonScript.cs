@@ -26,8 +26,8 @@ public class FoodSummonScript : MonoBehaviour
 
     public void FoodSummon()
     {
-        area_x = ground.transform.localScale.x / 2;
-        area_y = ground.transform.localScale.y / 2;
+        area_x = (ground.transform.localScale.x / 2) - 0.5f;
+        area_y = (ground.transform.localScale.y / 2) - 0.5f;
 
         if (foodCount > this.transform.childCount)
         {

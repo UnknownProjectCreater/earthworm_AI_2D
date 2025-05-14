@@ -17,7 +17,7 @@ public class WormAgent : Agent
     public float turnSpeed = 180f;
     public float speed = 5f;
     public float segmentDistance = 0.5f;
-    private Vector2 moveDirection;
+    Vector2 moveDirection;
 
     private List<Vector2> path = new List<Vector2>();
     private List<Transform> bodySegments = new List<Transform>();
@@ -37,9 +37,9 @@ public class WormAgent : Agent
 
     private void Update()
     {
-        if(foodGroup.childCount == 0)
+        if (foodGroup.childCount == 0)
         {
-            AddReward(2);
+            AddReward(3);
             EndEpisode();
         }
 
@@ -50,9 +50,11 @@ public class WormAgent : Agent
 
     void FixedUpdate()
     {
-        // 실제 이동
+        if(moveDirection == Vector2.zero)
+        {
+            moveDirection = transform.position.normalized;
+        }
         transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
-
 
         // 몸통 조각 이동
         MoveBodySegments();
@@ -64,7 +66,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.01f);
+        AddReward(-0.005f);
     }
 
     void MoveBodySegments()
@@ -182,11 +184,11 @@ public class WormAgent : Agent
         {
             Destroy(other.gameObject);
             wormManager.WormScore[wormID] += other.GetComponent<FoodScript>().point;
-            AddReward(1);
+            AddReward(2);
         }
         else if (other.CompareTag("Wall"))
         {
-            AddReward(-2);
+            AddReward(-3);
             EndEpisode();
         }
         else if (other.CompareTag("WormHead"))
@@ -242,7 +244,7 @@ public class WormAgent : Agent
 
         foreach (var obj in nearObj)
         {
-            if (count >= maxObjects) break;
+            if (count > maxObjects) break;
 
             int tagValue = -1;
             if (obj != null && obj.CompareTag("Wall"))
@@ -261,7 +263,7 @@ public class WormAgent : Agent
             count++;
         }
 
-        for (int i = count; i < maxObjects; i++)
+        for (int i = count; i == maxObjects; i++)
         {
             sensor.AddObservation(Vector2.zero);
             sensor.AddObservation(-1);
@@ -289,5 +291,10 @@ public class WormAgent : Agent
         {
             speed = 5;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, observationRadius);
     }
 }

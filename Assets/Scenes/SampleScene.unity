@@ -284,7 +284,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
+  MaxStep: 5000
   bodyGroup: {fileID: 0}
   wormHead: {fileID: 0}
   foodGroup: {fileID: 1008883451}
@@ -315,9 +315,9 @@ MonoBehaviour:
     VectorObservationSize: 34
     NumStackedVectorObservations: 1
     m_ActionSpec:
-      m_NumContinuousActions: 0
+      m_NumContinuousActions: 2
       BranchSizes: 02000000
-    VectorActionSize: 02000000
+    VectorActionSize: 
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -1120,7 +1120,7 @@ MonoBehaviour:
   ground: {fileID: 1961565879}
   foodPrefab: {fileID: 3389159971267983076, guid: b28b95630dec30f44ae8c48ad39509e5, type: 3}
   foodGroup: {fileID: 1008883450}
-  foodCount: 5
+  foodCount: 2
   area_x: 0
   area_y: 0
 --- !u!4 &1889542417
