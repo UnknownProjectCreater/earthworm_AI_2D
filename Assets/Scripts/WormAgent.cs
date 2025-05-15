@@ -39,7 +39,7 @@ public class WormAgent : Agent
     {
         if (foodGroup.childCount == 0)
         {
-            AddReward(3);
+            AddReward(6);
             EndEpisode();
         }
 
@@ -66,7 +66,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.005f);
+        AddReward(-0.001f);
     }
 
     void MoveBodySegments()
