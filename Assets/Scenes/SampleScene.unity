@@ -298,7 +298,7 @@ MonoBehaviour:
   foodSummonScript: {fileID: 1889542416}
   wormID: 1
   wormManager: {fileID: 461178706}
-  maxObjects: 0
+  maxObjects: 10
 --- !u!114 &216479798
 MonoBehaviour:
   m_ObjectHideFlags: 0

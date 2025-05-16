@@ -232,7 +232,7 @@ public class WormAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.localPosition);
+        sensor.AddObservation(new Vector2(transform.position.x, transform.position.y));
 
         float rad = transform.eulerAngles.z * Mathf.Deg2Rad;
         sensor.AddObservation(Mathf.Sin(rad));
@@ -244,7 +244,7 @@ public class WormAgent : Agent
 
         foreach (var obj in nearObj)
         {
-            if (count > maxObjects) break;
+            if (count >= maxObjects) break;
 
             int tagValue = -1;
             if (obj != null && obj.CompareTag("Wall"))
@@ -254,6 +254,7 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Food"))
             {
                 tagValue = 1;
+                RewardByDistance(obj.gameObject, 3.5f, 0.5f);
             }
 
             Vector2 relativePos = obj.transform.position - transform.position;
@@ -263,7 +264,7 @@ public class WormAgent : Agent
             count++;
         }
 
-        for (int i = count; i == maxObjects; i++)
+        for (int i = count; i < maxObjects; i++)
         {
             sensor.AddObservation(Vector2.zero);
             sensor.AddObservation(-1);
@@ -293,8 +294,28 @@ public class WormAgent : Agent
         }
     }
 
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        Debug.Log($"Heuristic called for WormAgent: {gameObject.name}");
+        var continuousActions = actionsOut.ContinuousActions;
+        continuousActions[0] = Input.GetAxis("Horizontal"); // A/D 또는 화살표 좌/우
+        continuousActions[1] = Input.GetAxis("Vertical");   // W/S 또는 화살표 위/아래
+        var discreteActions = actionsOut.DiscreteActions;
+        discreteActions[0] = Input.GetKey(KeyCode.Space) ? 1 : 0; // 스페이스바로 속도 업
+    }
+
+    void RewardByDistance(GameObject target, float maxDetectDistance, float rewardConstant)
+    {
+        float currentDistance = Vector2.Distance(transform.position, target.transform.position);
+        if(currentDistance < maxDetectDistance)
+        {
+            AddReward(rewardConstant * (1 - currentDistance / maxDetectDistance));
+            Debug.Log(rewardConstant * (1 - currentDistance / maxDetectDistance));
+        }
+    }
+
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, observationRadius);
+        Gizmos.DrawWireSphere(transform.position, 3);
     }
 }
