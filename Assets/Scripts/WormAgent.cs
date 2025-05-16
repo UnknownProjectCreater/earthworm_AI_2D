@@ -184,7 +184,7 @@ public class WormAgent : Agent
         {
             Destroy(other.gameObject);
             wormManager.WormScore[wormID] += other.GetComponent<FoodScript>().point;
-            AddReward(2);
+            AddReward(1.2f);
         }
         else if (other.CompareTag("Wall"))
         {
@@ -254,7 +254,7 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Food"))
             {
                 tagValue = 1;
-                RewardByDistance(obj.gameObject, 3.5f, 0.5f);
+                RewardByDistance(obj.gameObject, 2f, 0.1f);
             }
 
             Vector2 relativePos = obj.transform.position - transform.position;
