@@ -321,7 +321,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: a664eed32954cc44d87f2c2a6f2e3385, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 3
   m_BehaviorType: 0
   m_BehaviorName: MyWorm
@@ -1120,7 +1120,7 @@ MonoBehaviour:
   ground: {fileID: 1961565879}
   foodPrefab: {fileID: 3389159971267983076, guid: b28b95630dec30f44ae8c48ad39509e5, type: 3}
   foodGroup: {fileID: 1008883450}
-  foodCount: 2
+  foodCount: 5
   area_x: 0
   area_y: 0
 --- !u!4 &1889542417

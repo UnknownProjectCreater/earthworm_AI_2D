@@ -50,10 +50,6 @@ public class WormAgent : Agent
 
     void FixedUpdate()
     {
-        if(moveDirection == Vector2.zero)
-        {
-            moveDirection = transform.position.normalized;
-        }
         transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
 
         // 몸통 조각 이동
@@ -271,12 +267,24 @@ public class WormAgent : Agent
         }
     }
 
+    private Vector2 lastMoveDirection = Vector2.right;
+
     public override void OnActionReceived(ActionBuffers actions)
     {
         float moveX = actions.ContinuousActions[0]; // X축 이동 (-1 ~ 1)
         float moveY = actions.ContinuousActions[1]; // Y축 이동 (-1 ~ 1)
 
-        moveDirection = new Vector2(moveX, moveY).normalized;
+        Vector2 inputDir = new Vector2(moveX, moveY).normalized;
+
+        if(inputDir.magnitude > 0.1f)
+        {
+            moveDirection = inputDir;
+            lastMoveDirection = moveDirection;
+        }
+        else
+        {
+            moveDirection = lastMoveDirection;
+        }
 
         int isSpeedUP = actions.DiscreteActions[0];
         if(isSpeedUP == 1 && wormManager.WormScore[wormID] >= 1)
