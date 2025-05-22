@@ -44,12 +44,16 @@ public class WormAgent : Agent
         }
 
         BodyManage();
-
-        SpeedUp();
     }
 
     void FixedUpdate()
     {
+        float pathResolution = segmentDistance * 0.3f;
+        if (path.Count == 0 || Vector2.Distance(path[path.Count - 1], wormHead.position) > pathResolution)
+        {
+            path.Add(wormHead.position);
+        }
+
         transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
 
         // 몸통 조각 이동
@@ -62,7 +66,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.001f);
+        AddReward(-0.008f);
     }
 
     void MoveBodySegments()
@@ -145,55 +149,19 @@ public class WormAgent : Agent
                 bodySegments.Add(segment.transform);
             }
         }
-        else if (bodyGroup.childCount > bodyCount)
+
+        else if (bodyGroup.childCount > bodyCount && bodySegments.Count > 0)
         {
-            int segmentsToRemove = bodyGroup.childCount - bodyCount;
-            for (int i = 0; i < segmentsToRemove && bodySegments.Count > 0; i++)
+            for (int i = 0; i < bodyGroup.childCount - bodyCount; i++)
             {
                 Transform RemoveBody = bodyGroup.GetChild(bodyGroup.childCount - 1);
-                bodySegments.RemoveAt(bodySegments.Count - 1);
+                int count = bodySegments.Count - 1;
+
+                if (bodySegments.Count - 1 == -1) count = 0;
+
+                bodySegments.RemoveAt(count);
                 Destroy(RemoveBody.gameObject);
             }
-        }
-    }
-
-    void SpeedUp()
-    {
-        if (Input.GetMouseButton(0) && wormManager.WormScore[wormID] >= 1)
-        {
-            Transform segment = null;
-            if (bodySegments.Count - 1 == -1) segment = wormHead;
-            else segment = bodySegments[bodySegments.Count - 1];
-
-            StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
-            speed = 10;
-        }
-        else
-        {
-            speed = 5;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Food"))
-        {
-            Destroy(other.gameObject);
-            wormManager.WormScore[wormID] += other.GetComponent<FoodScript>().point;
-            AddReward(1.2f);
-        }
-        else if (other.CompareTag("Wall"))
-        {
-            AddReward(-3);
-            EndEpisode();
-        }
-        else if (other.CompareTag("WormHead"))
-        {
-
-        }
-        else if (other.GetComponent<WormBodyScript>().wormBodyID != wormID && other.CompareTag("WormBody"))
-        {
-            Debug.Log("A");
         }
     }
 
@@ -215,6 +183,7 @@ public class WormAgent : Agent
             Destroy(bodyGroup.GetChild(i).gameObject);
         }
 
+        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(1, 16);
         foodSummonScript.FoodSummon();
     }
 
@@ -223,8 +192,35 @@ public class WormAgent : Agent
         Initialized();
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Food"))
+        {
+            Destroy(other.gameObject);
+            wormManager.WormScore[wormID] += other.GetComponent<FoodScript>().point;
+            AddReward(1.2f);
+        }
+        else if (other.CompareTag("FoodPiece"))
+        {
+            AddReward(0.2f);
+        }
+        else if (other.CompareTag("Wall"))
+        {
+            AddReward(-3);
+            EndEpisode();
+        }
+        else if (other.CompareTag("WormHead"))
+        {
+
+        }
+        else if (other.GetComponent<WormBodyScript>().wormBodyID != wormID && other.CompareTag("WormBody"))
+        {
+            Debug.Log("A");
+        }
+    }
+
     float observationRadius = 10f;
-    public int maxObjects = 10;
+    public int maxObjects = 15;
 
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -250,7 +246,11 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Food"))
             {
                 tagValue = 1;
-                RewardByDistance(obj.gameObject, 2f, 0.1f);
+                RewardByDistance(obj.gameObject, 2f, 0.06f);
+            }
+            else if(obj != null && obj.CompareTag("FoodPiece"))
+            {
+                tagValue = 2;
             }
 
             Vector2 relativePos = obj.transform.position - transform.position;
@@ -294,6 +294,7 @@ public class WormAgent : Agent
             else segment = bodySegments[bodySegments.Count - 1];
 
             StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
+            Debug.Log(WormManager.instance.WormScore[1]);
             speed = 10;
         }
         else if(isSpeedUP == 0)
@@ -318,7 +319,6 @@ public class WormAgent : Agent
         if(currentDistance < maxDetectDistance)
         {
             AddReward(rewardConstant * (1 - currentDistance / maxDetectDistance));
-            Debug.Log(rewardConstant * (1 - currentDistance / maxDetectDistance));
         }
     }
 

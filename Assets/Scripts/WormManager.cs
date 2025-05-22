@@ -55,16 +55,14 @@ public class WormManager : MonoBehaviour
         if (isProcessing) yield break;
         isProcessing = true;
 
-        if (Input.GetMouseButton(0))
-        {
-            WormScore[ID] -= 0.5f;
-            //GameObject foodPiece = Instantiate(food, foodSpawnPosition.position, Quaternion.identity, foodSpawnGroup);
-            //foodPiece.GetComponent<FoodScript>().point = 0.5f;
-            //Renderer foodPrefabRend = foodPiece.GetComponent<Renderer>();
-            //Color randomColor = new Color(Random.value, Random.value, Random.value);
-            //foodPrefabRend.material.color = randomColor;
-            //foodPiece.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        }
+        WormScore[ID] -= 0.5f;
+        //GameObject foodpiece = Instantiate(food, foodSpawnPosition.position, Quaternion.identity, foodSpawnGroup);
+        //foodpiece.GetComponent<FoodScript>().point = 0.5f;
+        //foodpiece.tag = "FoodPiece";
+        //Renderer foodprefabrend = foodpiece.GetComponent<Renderer>();
+        //Color randomcolor = new Color(Random.value, Random.value, Random.value);
+        //foodprefabrend.material.color = randomcolor;
+        //foodpiece.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
         yield return new WaitForSeconds(0.5f);
         isProcessing = false;
