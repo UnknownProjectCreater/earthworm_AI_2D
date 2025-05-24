@@ -55,7 +55,7 @@ public class WormManager : MonoBehaviour
         if (isProcessing) yield break;
         isProcessing = true;
 
-        WormScore[ID] -= 0.5f;
+        //WormScore[ID] -= 0.5f;
         //GameObject foodpiece = Instantiate(food, foodSpawnPosition.position, Quaternion.identity, foodSpawnGroup);
         //foodpiece.GetComponent<FoodScript>().point = 0.5f;
         //foodpiece.tag = "FoodPiece";

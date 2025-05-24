@@ -7,6 +7,7 @@ using Unity.MLAgents.Actuators;
 
 public class WormAgent : Agent
 {
+    public Transform ground;
     public Transform bodyGroup;
     public Transform wormHead;
     public Transform foodGroup;
@@ -66,7 +67,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.008f);
+        AddReward(-0.001f);
     }
 
     void MoveBodySegments()
@@ -183,7 +184,7 @@ public class WormAgent : Agent
             Destroy(bodyGroup.GetChild(i).gameObject);
         }
 
-        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(1, 16);
+        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(5, 6);
         foodSummonScript.FoodSummon();
     }
 
@@ -198,7 +199,7 @@ public class WormAgent : Agent
         {
             Destroy(other.gameObject);
             wormManager.WormScore[wormID] += other.GetComponent<FoodScript>().point;
-            AddReward(1.2f);
+            AddReward(2f);
         }
         else if (other.CompareTag("FoodPiece"))
         {
@@ -220,11 +221,21 @@ public class WormAgent : Agent
     }
 
     float observationRadius = 10f;
-    public int maxObjects = 15;
+    public int maxObjects = 10;
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(new Vector2(transform.position.x, transform.position.y));
+        float halfWidth = ground.transform.localScale.x / 2;  // base scale 1 → 실제 크기 10
+        float halfHeight = ground.transform.localScale.y / 2;
+
+        Vector3 pos = transform.position;
+
+        float normX = (pos.x - ground.position.x) / halfWidth;
+        float normY = (pos.y - ground.position.y) / halfHeight;
+
+        // 범위가 -1 ~ 1로 정규화됨
+        sensor.AddObservation(new Vector2(normX, normY));
+
 
         float rad = transform.eulerAngles.z * Mathf.Deg2Rad;
         sensor.AddObservation(Mathf.Sin(rad));
@@ -324,6 +335,6 @@ public class WormAgent : Agent
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, 3);
+        Gizmos.DrawWireSphere(transform.position, observationRadius);
     }
 }
