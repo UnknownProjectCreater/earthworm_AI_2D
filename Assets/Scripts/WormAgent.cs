@@ -67,7 +67,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.001f);
+        AddReward(-0.005f);
     }
 
     void MoveBodySegments()
@@ -257,7 +257,7 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Food"))
             {
                 tagValue = 1;
-                RewardByDistance(obj.gameObject, 2f, 0.06f);
+                RewardByDistance(obj.gameObject, 2f, 0.05f);
             }
             else if(obj != null && obj.CompareTag("FoodPiece"))
             {
@@ -305,7 +305,6 @@ public class WormAgent : Agent
             else segment = bodySegments[bodySegments.Count - 1];
 
             StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
-            Debug.Log(WormManager.instance.WormScore[1]);
             speed = 10;
         }
         else if(isSpeedUP == 0)
@@ -324,12 +323,12 @@ public class WormAgent : Agent
         discreteActions[0] = Input.GetKey(KeyCode.Space) ? 1 : 0; // 스페이스바로 속도 업
     }
 
-    void RewardByDistance(GameObject target, float maxDetectDistance, float rewardConstant)
+    void RewardByDistance(GameObject target, float maxdetectdistance, float rewardconstant)
     {
-        float currentDistance = Vector2.Distance(transform.position, target.transform.position);
-        if(currentDistance < maxDetectDistance)
+        float currentdistance = Vector2.Distance(transform.position, target.transform.position);
+        if (currentdistance < maxdetectdistance)
         {
-            AddReward(rewardConstant * (1 - currentDistance / maxDetectDistance));
+            AddReward(rewardconstant * (1 - currentdistance / maxdetectdistance));
         }
     }
 
