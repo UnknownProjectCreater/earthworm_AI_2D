@@ -67,7 +67,7 @@ public class WormAgent : Agent
             path.RemoveAt(0);
         }
 
-        AddReward(-0.005f);
+        AddReward(-0.002f);
     }
 
     void MoveBodySegments()
@@ -184,7 +184,7 @@ public class WormAgent : Agent
             Destroy(bodyGroup.GetChild(i).gameObject);
         }
 
-        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(5, 6);
+        //foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(5, 6);
         foodSummonScript.FoodSummon();
     }
 
@@ -225,17 +225,16 @@ public class WormAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        float halfWidth = ground.transform.localScale.x / 2;  // base scale 1 → 실제 크기 10
-        float halfHeight = ground.transform.localScale.y / 2;
-
+        float halfwidth = ground.transform.localScale.x / 2;  // base scale 1 → 실제 크기 10
+        float halfheight = ground.transform.localScale.y / 2;
+        
         Vector3 pos = transform.position;
 
-        float normX = (pos.x - ground.position.x) / halfWidth;
-        float normY = (pos.y - ground.position.y) / halfHeight;
+        float normx = (pos.x - ground.position.x) / halfwidth;
+        float normy = (pos.y - ground.position.y) / halfheight;
 
         // 범위가 -1 ~ 1로 정규화됨
-        sensor.AddObservation(new Vector2(normX, normY));
-
+        sensor.AddObservation(new Vector2(normx, normy));
 
         float rad = transform.eulerAngles.z * Mathf.Deg2Rad;
         sensor.AddObservation(Mathf.Sin(rad));
@@ -257,7 +256,7 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Food"))
             {
                 tagValue = 1;
-                RewardByDistance(obj.gameObject, 2f, 0.05f);
+                RewardByDistance(obj.gameObject, 2f, 0.03f);
             }
             else if(obj != null && obj.CompareTag("FoodPiece"))
             {
