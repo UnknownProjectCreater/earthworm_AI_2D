@@ -184,7 +184,7 @@ public class WormAgent : Agent
             Destroy(bodyGroup.GetChild(i).gameObject);
         }
 
-        //foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(5, 6);
+        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(3, 4);
         foodSummonScript.FoodSummon();
     }
 
@@ -207,7 +207,7 @@ public class WormAgent : Agent
         }
         else if (other.CompareTag("Wall"))
         {
-            AddReward(-3);
+            AddReward(-6);
             EndEpisode();
         }
         else if (other.CompareTag("WormHead"))
@@ -248,24 +248,21 @@ public class WormAgent : Agent
         {
             if (count >= maxObjects) break;
 
-            int tagValue = -1;
             if (obj != null && obj.CompareTag("Wall"))
             {
-                tagValue = 0;
+                RewardByDistance(obj.gameObject, 2f, -0.03f);
             }
             else if (obj != null && obj.CompareTag("Food"))
             {
-                tagValue = 1;
                 RewardByDistance(obj.gameObject, 2f, 0.03f);
             }
             else if(obj != null && obj.CompareTag("FoodPiece"))
             {
-                tagValue = 2;
+
             }
 
             Vector2 relativePos = obj.transform.position - transform.position;
             sensor.AddObservation(relativePos);
-            sensor.AddObservation(tagValue);
 
             count++;
         }
