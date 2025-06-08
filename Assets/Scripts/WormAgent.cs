@@ -184,7 +184,7 @@ public class WormAgent : Agent
             Destroy(bodyGroup.GetChild(i).gameObject);
         }
 
-        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(3, 4);
+        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(4, 5);
         foodSummonScript.FoodSummon();
     }
 
@@ -220,7 +220,7 @@ public class WormAgent : Agent
         }
     }
 
-    float observationRadius = 10f;
+    float observationRadius = 15f;
     public int maxObjects = 10;
 
     public override void CollectObservations(VectorSensor sensor)
@@ -244,33 +244,56 @@ public class WormAgent : Agent
 
         int count = 0;
 
+        int tagObserve = -1;
+
+        GameObject nearestObj = null;
+        float minDist = float.MaxValue;
+
         foreach (var obj in nearObj)
         {
             if (count >= maxObjects) break;
 
             if (obj != null && obj.CompareTag("Wall"))
             {
+                tagObserve = 2;
+                Vector2 relativePos = obj.transform.position - transform.position;
+                sensor.AddObservation(relativePos);
+                sensor.AddObservation(tagObserve);
                 RewardByDistance(obj.gameObject, 2f, -0.03f);
+
+                count++;
             }
             else if (obj != null && obj.CompareTag("Food"))
             {
-                RewardByDistance(obj.gameObject, 2f, 0.03f);
+                float dist = Vector2.Distance(transform.position, obj.transform.position);
+                if (minDist > dist)
+                {
+                    minDist = dist;
+                    nearestObj = obj.gameObject;
+                }
             }
-            else if(obj != null && obj.CompareTag("FoodPiece"))
-            {
+        }
 
-            }
-
-            Vector2 relativePos = obj.transform.position - transform.position;
+        if (nearestObj != null)
+        {
+            tagObserve = 1;
+            Vector2 relativePos = nearestObj.transform.position - transform.position;
+            sensor.AddObservation(tagObserve);
             sensor.AddObservation(relativePos);
-
-            count++;
+            RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
+        }
+        else
+        {
+            tagObserve = -1;
+            sensor.AddObservation(Vector2.zero);
+            sensor.AddObservation(tagObserve);
         }
 
         for (int i = count; i < maxObjects; i++)
         {
+            tagObserve = -1;
             sensor.AddObservation(Vector2.zero);
-            sensor.AddObservation(-1);
+            sensor.AddObservation(tagObserve);
         }
     }
 
