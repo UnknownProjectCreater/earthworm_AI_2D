@@ -244,7 +244,7 @@ public class WormAgent : Agent
 
         int count = 0;
 
-        int tagObserve = -1;
+        float tagObserve = -1;
 
         GameObject nearestObj = null;
         float minDist = float.MaxValue;
@@ -257,43 +257,50 @@ public class WormAgent : Agent
             {
                 tagObserve = 2;
                 Vector2 relativePos = obj.transform.position - transform.position;
-                sensor.AddObservation(relativePos);
                 sensor.AddObservation(tagObserve);
+                sensor.AddObservation(relativePos);
                 RewardByDistance(obj.gameObject, 2f, -0.03f);
 
                 count++;
             }
-            else if (obj != null && obj.CompareTag("Food"))
+        }
+
+        foreach (var obj in nearObj)
+        {
+            if (obj != null && obj.CompareTag("Food"))
             {
                 float dist = Vector2.Distance(transform.position, obj.transform.position);
+
                 if (minDist > dist)
                 {
                     minDist = dist;
                     nearestObj = obj.gameObject;
                 }
-            }
-        }
 
-        if (nearestObj != null)
-        {
-            tagObserve = 1;
-            Vector2 relativePos = nearestObj.transform.position - transform.position;
-            sensor.AddObservation(tagObserve);
-            sensor.AddObservation(relativePos);
-            RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
-        }
-        else
-        {
-            tagObserve = -1;
-            sensor.AddObservation(Vector2.zero);
-            sensor.AddObservation(tagObserve);
+                if (nearestObj != null)
+                {
+                    tagObserve = 1;
+                    Vector2 relativePos = nearestObj.transform.position - transform.position;
+                    sensor.AddObservation(tagObserve);
+                    sensor.AddObservation(relativePos);
+                    RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
+                }
+                else
+                {
+                    tagObserve = -1;
+                    sensor.AddObservation(tagObserve);
+                    sensor.AddObservation(Vector2.zero);
+                }
+
+                count++;
+            }
         }
 
         for (int i = count; i < maxObjects; i++)
         {
             tagObserve = -1;
-            sensor.AddObservation(Vector2.zero);
             sensor.AddObservation(tagObserve);
+            sensor.AddObservation(Vector2.zero);
         }
     }
 
