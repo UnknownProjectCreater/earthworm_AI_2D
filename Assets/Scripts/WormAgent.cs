@@ -18,11 +18,11 @@ public class WormAgent : Agent
     public float turnSpeed = 180f;
     public float speed = 5f;
     public float segmentDistance = 0.5f;
+    public bool thisAgentBiginEpisode = false;
     Vector2 moveDirection;
 
-    private List<Vector2> path = new List<Vector2>();
-    private List<Transform> bodySegments = new List<Transform>();
-    public FoodSummonScript foodSummonScript;
+    public List<Vector2> path = new List<Vector2>();
+    public List<Transform> bodySegments = new List<Transform>();
 
     public int wormID;
 
@@ -30,8 +30,6 @@ public class WormAgent : Agent
 
     private void Start()
     {
-        MaxFoodCount = foodSummonScript.foodCount;
-
         wormHead = this.transform;
         bodyGroup = transform.parent.GetChild(1);
     }
@@ -166,31 +164,9 @@ public class WormAgent : Agent
         }
     }
 
-    private void Initialized()
-    {
-        float x = Random.Range((foodSummonScript.area_x - 0.4f) / 2, -(foodSummonScript.area_x - 0.4f) / 2);
-        float y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
-        this.transform.position = new Vector3(x, y, this.transform.position.z);
-
-        bodyCount = 0;
-        wormManager.DictSet();
-        bodySegments.Clear();
-        for(int i = 0; i < foodGroup.childCount; i++)
-        {
-            Destroy(foodGroup.GetChild(i).gameObject);
-        }
-        for (int i = 0; i < bodyGroup.childCount; i++)
-        {
-            Destroy(bodyGroup.GetChild(i).gameObject);
-        }
-
-        foodSummonScript.GetComponent<FoodSummonScript>().foodCount = Random.Range(4, 5);
-        foodSummonScript.FoodSummon();
-    }
-
     public override void OnEpisodeBegin()
     {
-        Initialized();
+        thisAgentBiginEpisode = true;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -218,6 +194,11 @@ public class WormAgent : Agent
         {
             Debug.Log("A");
         }
+    }
+
+    public void EpisodeFinish()
+    {
+        EndEpisode();
     }
 
     float observationRadius = 15f;
