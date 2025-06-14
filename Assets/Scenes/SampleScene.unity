@@ -297,6 +297,7 @@ MonoBehaviour:
   speed: 5
   segmentDistance: 0.5
   thisAgentBiginEpisode: 0
+  touchWall: 0
   path: []
   bodySegments: []
   wormID: 0
@@ -327,7 +328,7 @@ MonoBehaviour:
   m_Model: {fileID: 5022602860645237092, guid: f0e1d33a868561c45a8801f725ecc982, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
-  m_BehaviorName: MyWorm
+  m_BehaviorName: WormA
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -639,7 +640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0f5c5b9db326647a20fb3b5f3cc394, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WormID: 00000000010000000000000000000000
+  WormID: 0000000001000000
 --- !u!4 &461178707
 Transform:
   m_ObjectHideFlags: 0
@@ -1469,6 +1470,7 @@ MonoBehaviour:
   speed: 5
   segmentDistance: 0.5
   thisAgentBiginEpisode: 0
+  touchWall: 0
   path: []
   bodySegments: []
   wormID: 1
@@ -1499,7 +1501,7 @@ MonoBehaviour:
   m_Model: {fileID: 5022602860645237092, guid: f0e1d33a868561c45a8801f725ecc982, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
-  m_BehaviorName: MyWorm
+  m_BehaviorName: WormB
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1

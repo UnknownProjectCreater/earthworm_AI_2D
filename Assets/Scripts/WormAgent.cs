@@ -19,6 +19,7 @@ public class WormAgent : Agent
     public float speed = 5f;
     public float segmentDistance = 0.5f;
     public bool thisAgentBiginEpisode = false;
+    public bool touchWall = false;
     Vector2 moveDirection;
 
     public List<Vector2> path = new List<Vector2>();
@@ -36,12 +37,6 @@ public class WormAgent : Agent
 
     private void Update()
     {
-        if (foodGroup.childCount == 0)
-        {
-            AddReward(6);
-            EndEpisode();
-        }
-
         BodyManage();
     }
 
@@ -167,6 +162,7 @@ public class WormAgent : Agent
     public override void OnEpisodeBegin()
     {
         thisAgentBiginEpisode = true;
+        touchWall = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -184,7 +180,7 @@ public class WormAgent : Agent
         else if (other.CompareTag("Wall"))
         {
             AddReward(-6);
-            EndEpisode();
+            touchWall = true;
         }
         else if (other.CompareTag("WormHead"))
         {
@@ -194,11 +190,6 @@ public class WormAgent : Agent
         {
             Debug.Log("A");
         }
-    }
-
-    public void EpisodeFinish()
-    {
-        EndEpisode();
     }
 
     float observationRadius = 15f;
@@ -227,24 +218,11 @@ public class WormAgent : Agent
 
         float tagObserve = -1;
 
+        Vector2 relativePos;
+
         GameObject nearestObj = null;
         float minDist = float.MaxValue;
 
-        foreach (var obj in nearObj)
-        {
-            if (count >= maxObjects) break;
-
-            if (obj != null && obj.CompareTag("Wall"))
-            {
-                tagObserve = 2;
-                Vector2 relativePos = obj.transform.position - transform.position;
-                sensor.AddObservation(tagObserve);
-                sensor.AddObservation(relativePos);
-                RewardByDistance(obj.gameObject, 2f, -0.03f);
-
-                count++;
-            }
-        }
 
         foreach (var obj in nearObj)
         {
@@ -257,24 +235,43 @@ public class WormAgent : Agent
                     minDist = dist;
                     nearestObj = obj.gameObject;
                 }
-
-                if (nearestObj != null)
-                {
-                    tagObserve = 1;
-                    Vector2 relativePos = nearestObj.transform.position - transform.position;
-                    sensor.AddObservation(tagObserve);
-                    sensor.AddObservation(relativePos);
-                    RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
-                }
-                else
-                {
-                    tagObserve = -1;
-                    sensor.AddObservation(tagObserve);
-                    sensor.AddObservation(Vector2.zero);
-                }
-
-                count++;
             }
+        }
+        if (nearestObj != null)
+        {
+            tagObserve = 1;
+            relativePos = nearestObj.transform.position - transform.position;
+            sensor.AddObservation(tagObserve);
+            sensor.AddObservation(relativePos);
+            RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
+            count++;
+        }
+
+        foreach (var obj in nearObj)
+        {
+            if (count >= maxObjects) break;
+
+            if (obj != null && obj.CompareTag("Wall"))
+            {
+                tagObserve = 2;
+                relativePos = obj.transform.position - transform.position;
+                RewardByDistance(obj.gameObject, 2f, -0.03f);
+            }
+
+            else if (obj != null && obj.CompareTag("WormHead"))
+            {
+                tagObserve = 3;
+                relativePos = obj.transform.position - transform.position;
+            }
+
+            else
+            {
+                continue;
+            }
+
+            sensor.AddObservation(tagObserve);
+            sensor.AddObservation(relativePos);
+            count++;
         }
 
         for (int i = count; i < maxObjects; i++)
@@ -283,6 +280,8 @@ public class WormAgent : Agent
             sensor.AddObservation(tagObserve);
             sensor.AddObservation(Vector2.zero);
         }
+        int a = sensor.ObservationSize();
+        Debug.Log(a);
     }
 
     private Vector2 lastMoveDirection = Vector2.right;

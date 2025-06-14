@@ -46,8 +46,6 @@ public class WormManager : MonoBehaviour
     {
         WormScore[WormID[0]] = 0;
         WormScore[WormID[1]] = 0;
-        WormScore[WormID[2]] = 0;
-        WormScore[WormID[3]] = 0;
     }
 
     public IEnumerator DecreaseScoreProcess(int ID, GameObject food, Transform foodSpawnPosition, Transform foodSpawnGroup)
