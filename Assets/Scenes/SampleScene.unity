@@ -325,7 +325,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: f0e1d33a868561c45a8801f725ecc982, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 2cdb5cc3cea328042a6d48b8ba176baa, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: WormA
@@ -1498,7 +1498,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: f0e1d33a868561c45a8801f725ecc982, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 264804624bb22fa49b40031cc445c7c7, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: WormB

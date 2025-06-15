@@ -280,8 +280,6 @@ public class WormAgent : Agent
             sensor.AddObservation(tagObserve);
             sensor.AddObservation(Vector2.zero);
         }
-        int a = sensor.ObservationSize();
-        Debug.Log(a);
     }
 
     private Vector2 lastMoveDirection = Vector2.right;

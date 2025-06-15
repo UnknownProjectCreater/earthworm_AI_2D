@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         ChildReset(agentA.bodyGroup);
         ChildReset(agentB.bodyGroup);
 
-        foodSummonScript.foodCount = Random.Range(4, 5);
+        foodSummonScript.foodCount = Random.Range(5, 11);
         foodSummonScript.FoodSummon();
 
         episodeEnded = false;
