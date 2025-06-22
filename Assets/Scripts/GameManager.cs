@@ -39,22 +39,22 @@ public class GameManager : MonoBehaviour
         float y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
         agentA.transform.position = new Vector3(x, y, agentA.transform.position.z);
 
-        x = Random.Range((foodSummonScript.area_x - 0.4f) / 2, -(foodSummonScript.area_x - 0.4f) / 2);
-        y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
-        agentB.transform.position = new Vector3(x, y, agentB.transform.position.z);
+        //x = Random.Range((foodSummonScript.area_x - 0.4f) / 2, -(foodSummonScript.area_x - 0.4f) / 2);
+        //y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
+        //agentB.transform.position = new Vector3(x, y, agentB.transform.position.z);
 
         agentA.bodyCount = 0;
-        agentB.bodyCount = 0;
+        //agentB.bodyCount = 0;
         WormManager.instance.DictSet();
 
         agentA.bodySegments.Clear();
-        agentB.bodySegments.Clear();
+        //agentB.bodySegments.Clear();
 
         ChildReset(foodGroup);
         ChildReset(agentA.bodyGroup);
-        ChildReset(agentB.bodyGroup);
+        //ChildReset(agentB.bodyGroup);
 
-        foodSummonScript.foodCount = Random.Range(5, 11);
+        foodSummonScript.foodCount = Random.Range(2, 4);
         foodSummonScript.FoodSummon();
 
         episodeEnded = false;
@@ -62,32 +62,40 @@ public class GameManager : MonoBehaviour
 
     void EnvironmentInitialize()
     {
-        if (agentA.thisAgentBiginEpisode.Equals(true) && agentB.thisAgentBiginEpisode.Equals(true) && environmentResetPending)
+        if (agentA.thisAgentBiginEpisode.Equals(true) && environmentResetPending)
         {
             Initialize();
             agentA.thisAgentBiginEpisode = false;
-            agentB.thisAgentBiginEpisode = false;
             environmentResetPending = false;
         }
+        //if (agentA.thisAgentBiginEpisode.Equals(true) && agentB.thisAgentBiginEpisode.Equals(true) && environmentResetPending)
+        //{
+        //    Initialize();
+        //    agentA.thisAgentBiginEpisode = false;
+        //    agentB.thisAgentBiginEpisode = false;
+        //    environmentResetPending = false;
+        //}
     }
 
     void SetWinAgent()
     {
-        if (WormManager.instance.WormID[agentA.wormID] > WormManager.instance.WormID[agentB.wormID])
-        {
-            agentA.AddReward(6f);
-        }
-        else if(WormManager.instance.WormID[agentA.wormID] < WormManager.instance.WormID[agentB.wormID])
-        {
-            agentB.AddReward(6f);
-        }
-        else
-        {
-            agentA.AddReward(0f);
-            agentB.AddReward(0f);
-        }
+        agentA.AddReward(6f);
         agentA.EndEpisode();
-        agentB.EndEpisode();
+        //if (WormManager.instance.WormID[agentA.wormID] > WormManager.instance.WormID[agentB.wormID])
+        //{
+        //    agentA.AddReward(6f);
+        //}
+        //else if(WormManager.instance.WormID[agentA.wormID] < WormManager.instance.WormID[agentB.wormID])
+        //{
+        //    agentB.AddReward(6f);
+        //}
+        //else
+        //{
+        //    agentA.AddReward(0f);
+        //    agentB.AddReward(0f);
+        //}
+        //agentA.EndEpisode();
+        //agentB.EndEpisode();
     }
 
     void ChildReset(Transform parent)
@@ -106,18 +114,18 @@ public class GameManager : MonoBehaviour
         {
             agentA.AddReward(-6f);
             agentA.EndEpisode();
-            agentB.EndEpisode();
+            //agentB.EndEpisode();
 
             touched = true;
         }
-        else if (agentB.touchWall.Equals(true))
-        {
-            agentB.AddReward(-6f);
-            agentA.EndEpisode();
-            agentB.EndEpisode();
+        //else if (agentB.touchWall.Equals(true))
+        //{
+        //    agentB.AddReward(-6f);
+        //    agentA.EndEpisode();
+        //    agentB.EndEpisode();
 
-            touched = true;
-        }
+        //    touched = true;
+        //}
 
         if (touched) environmentResetPending = true;
     }

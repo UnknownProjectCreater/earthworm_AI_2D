@@ -4,6 +4,7 @@ using System.Collections;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using System.Linq;
 
 public class WormAgent : Agent
 {
@@ -192,6 +193,7 @@ public class WormAgent : Agent
         }
     }
 
+
     float observationRadius = 15f;
     public int maxObjects = 10;
 
@@ -199,7 +201,7 @@ public class WormAgent : Agent
     {
         float halfwidth = ground.transform.localScale.x / 2;  // base scale 1 → 실제 크기 10
         float halfheight = ground.transform.localScale.y / 2;
-        
+
         Vector3 pos = transform.position;
 
         float normx = (pos.x - ground.position.x) / halfwidth;
@@ -214,54 +216,43 @@ public class WormAgent : Agent
 
         Collider2D[] nearObj = Physics2D.OverlapCircleAll(this.transform.position, observationRadius);
 
+        var sortedObjs = nearObj.Where(o => o != null && (o.CompareTag("Food") || o.CompareTag("Wall") || o.CompareTag("WormHead"))).Select(o => new
+        {
+            collider2D = o,
+            distance = Vector2.Distance(transform.position, o.transform.position)
+        })
+        .OrderBy(o => o.distance)
+        .Take(maxObjects)
+        .ToList();
+
         int count = 0;
 
         float tagObserve = -1;
 
         Vector2 relativePos;
 
-        GameObject nearestObj = null;
-        float minDist = float.MaxValue;
-
-
-        foreach (var obj in nearObj)
-        {
-            if (obj != null && obj.CompareTag("Food"))
-            {
-                float dist = Vector2.Distance(transform.position, obj.transform.position);
-
-                if (minDist > dist)
-                {
-                    minDist = dist;
-                    nearestObj = obj.gameObject;
-                }
-            }
-        }
-        if (nearestObj != null)
-        {
-            tagObserve = 1;
-            relativePos = nearestObj.transform.position - transform.position;
-            sensor.AddObservation(tagObserve);
-            sensor.AddObservation(relativePos);
-            RewardByDistance(nearestObj.gameObject, 2f, 0.03f);
-            count++;
-        }
-
-        foreach (var obj in nearObj)
+        foreach (var item in sortedObjs)
         {
             if (count >= maxObjects) break;
 
-            if (obj != null && obj.CompareTag("Wall"))
+            var obj = item.collider2D;
+            relativePos = obj.transform.position - transform.position;
+
+            if(obj != null && obj.CompareTag("Food"))
+            {
+                tagObserve = 1;
+                RewardByDistance(obj.gameObject, 4.5f, 0.03f);
+            }
+
+            else if (obj != null && obj.CompareTag("Wall"))
             {
                 tagObserve = 2;
-                relativePos = obj.transform.position - transform.position;
                 RewardByDistance(obj.gameObject, 2f, -0.03f);
             }
 
             else if (obj != null && obj.CompareTag("WormHead"))
             {
                 tagObserve = 3;
-                relativePos = obj.transform.position - transform.position;
             }
 
             else

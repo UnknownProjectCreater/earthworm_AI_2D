@@ -325,7 +325,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2cdb5cc3cea328042a6d48b8ba176baa, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 1274c4043bfd90a4fb98cf9c0860bdd5, type: 3}
   m_InferenceDevice: 1
   m_BehaviorType: 0
   m_BehaviorName: WormA
@@ -593,7 +593,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &426557097
 Transform:
   m_ObjectHideFlags: 0
@@ -1469,8 +1469,8 @@ MonoBehaviour:
   turnSpeed: 180
   speed: 5
   segmentDistance: 0.5
-  thisAgentBiginEpisode: 0
-  touchWall: 0
+  thisAgentBiginEpisode: 1
+  touchWall: 1
   path: []
   bodySegments: []
   wormID: 1
