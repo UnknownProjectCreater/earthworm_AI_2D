@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,121 +11,117 @@ public class GameManager : MonoBehaviour
 
     private bool episodeEnded = false;
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    private bool environmentResetPending = false;
-
     void FixedUpdate()
     {
-        if (foodGroup.childCount == 0 && episodeEnded.Equals(false))
+        // 벽 충돌 확인
+        if (!episodeEnded)
         {
-            SetWinAgent();
-            episodeEnded = true;
-            environmentResetPending = true;
+            if (agentA.touchWall) // || agentB.touchWall
+            {
+                HandleWallCollision();
+            }
+            else if (foodGroup.childCount == 0)
+            {
+                agentA.AddReward(6);
+                HandleFoodDepleted();
+            }
         }
-        TouchWallAgent();
-
-        EnvironmentInitialize();
     }
 
-    void Initialize()
+    void HandleWallCollision()
     {
-        float x = Random.Range((foodSummonScript.area_x - 0.4f) / 2, -(foodSummonScript.area_x - 0.4f) / 2);
-        float y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
-        agentA.transform.position = new Vector3(x, y, agentA.transform.position.z);
+        episodeEnded = true;
 
-        //x = Random.Range((foodSummonScript.area_x - 0.4f) / 2, -(foodSummonScript.area_x - 0.4f) / 2);
-        //y = Random.Range((foodSummonScript.area_y - 0.4f) / 2, -(foodSummonScript.area_y - 0.4f) / 2);
-        //agentB.transform.position = new Vector3(x, y, agentB.transform.position.z);
+        if (agentA.touchWall)
+        {
+            agentA.AddReward(-6f);
+        }
 
-        agentA.bodyCount = 0;
-        //agentB.bodyCount = 0;
-        WormManager.instance.DictSet();
+        //if (agentB.touchWall)
+        //{
+        //    agentB.AddReward(-6f);
+        //}
 
-        agentA.bodySegments.Clear();
-        //agentB.bodySegments.Clear();
+        agentA.EndEpisode();
+        //agentB.EndEpisode();
 
-        ChildReset(foodGroup);
-        ChildReset(agentA.bodyGroup);
-        //ChildReset(agentB.bodyGroup);
+        ResetEnvironment();
+    }
 
-        foodSummonScript.foodCount = Random.Range(2, 4);
-        foodSummonScript.FoodSummon();
+    void HandleFoodDepleted()
+    {
+        episodeEnded = true;
+
+        //int scoreA = WormManager.instance.WormID[agentA.wormID];
+        //int scoreB = WormManager.instance.WormID[agentB.wormID];
+
+        //if (scoreA > scoreB)
+        //{
+        //    agentA.AddReward(12f); // 보상 중복 방지를 위해 6f + 6f 병합
+        //}
+        //else if (scoreB > scoreA)
+        //{
+        //    agentB.AddReward(12f);
+        //}
+        //else
+        //{
+        //    // 무승부: 보상 없음
+        //}
+
+        agentA.EndEpisode();
+        //agentB.EndEpisode();
+
+        ResetEnvironment();
+    }
+
+    void ResetEnvironment()
+    {
+        ResetAgent(agentA);
+        //ResetAgent(agentB);
+        ResetFood();
 
         episodeEnded = false;
     }
 
-    void EnvironmentInitialize()
+    void ResetAgent(WormAgent agent)
     {
-        if (agentA.thisAgentBiginEpisode.Equals(true) && environmentResetPending)
-        {
-            Initialize();
-            agentA.thisAgentBiginEpisode = false;
-            environmentResetPending = false;
-        }
-        //if (agentA.thisAgentBiginEpisode.Equals(true) && agentB.thisAgentBiginEpisode.Equals(true) && environmentResetPending)
-        //{
-        //    Initialize();
-        //    agentA.thisAgentBiginEpisode = false;
-        //    agentB.thisAgentBiginEpisode = false;
-        //    environmentResetPending = false;
-        //}
+        // 랜덤 위치
+        float x = Random.Range(-(foodSummonScript.area_x - 0.4f) / 2, (foodSummonScript.area_x - 0.4f) / 2);
+        float y = Random.Range(-(foodSummonScript.area_y - 0.4f) / 2, (foodSummonScript.area_y - 0.4f) / 2);
+        agent.transform.position = new Vector3(x, y, agent.transform.position.z);
+
+        // 방향 초기화
+        Vector2 dir = Random.insideUnitCircle.normalized;
+        agent.moveDirection = dir;
+
+        // 상태 초기화
+        agent.touchWall = false;
+        agent.thisAgentBiginEpisode = false;
+
+        // 몸통 제거
+        ChildReset(agent.bodyGroup);
+        agent.bodySegments.Clear();
+        agent.bodyCount = 0;
     }
 
-    void SetWinAgent()
+    void ResetFood()
     {
-        agentA.AddReward(6f);
-        agentA.EndEpisode();
-        //if (WormManager.instance.WormID[agentA.wormID] > WormManager.instance.WormID[agentB.wormID])
-        //{
-        //    agentA.AddReward(6f);
-        //}
-        //else if(WormManager.instance.WormID[agentA.wormID] < WormManager.instance.WormID[agentB.wormID])
-        //{
-        //    agentB.AddReward(6f);
-        //}
-        //else
-        //{
-        //    agentA.AddReward(0f);
-        //    agentB.AddReward(0f);
-        //}
-        //agentA.EndEpisode();
-        //agentB.EndEpisode();
+        // 기존 음식 제거
+        ChildReset(foodGroup);
+
+        // 스코어 초기화
+        WormManager.instance.DictSet();
+
+        // 새 음식 소환
+        foodSummonScript.foodCount = Random.Range(2, 4);
+        foodSummonScript.FoodSummon();
     }
 
     void ChildReset(Transform parent)
     {
-        for (int i = 0; i < parent.childCount; i++)
+        for (int i = parent.childCount - 1; i >= 0; i--)
         {
             Destroy(parent.GetChild(i).gameObject);
         }
-    }
-
-    void TouchWallAgent()
-    {
-        bool touched = false;
-
-        if (agentA.touchWall.Equals(true))
-        {
-            agentA.AddReward(-6f);
-            agentA.EndEpisode();
-            //agentB.EndEpisode();
-
-            touched = true;
-        }
-        //else if (agentB.touchWall.Equals(true))
-        //{
-        //    agentB.AddReward(-6f);
-        //    agentA.EndEpisode();
-        //    agentB.EndEpisode();
-
-        //    touched = true;
-        //}
-
-        if (touched) environmentResetPending = true;
     }
 }

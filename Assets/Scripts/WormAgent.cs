@@ -21,7 +21,7 @@ public class WormAgent : Agent
     public float segmentDistance = 0.5f;
     public bool thisAgentBiginEpisode = false;
     public bool touchWall = false;
-    Vector2 moveDirection;
+    public Vector2 moveDirection;
 
     public List<Vector2> path = new List<Vector2>();
     public List<Transform> bodySegments = new List<Transform>();
@@ -196,6 +196,7 @@ public class WormAgent : Agent
 
     float observationRadius = 15f;
     public int maxObjects = 10;
+    float[] ObserveType = { 0, 0, 0 };
 
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -227,8 +228,6 @@ public class WormAgent : Agent
 
         int count = 0;
 
-        float tagObserve = -1;
-
         Vector2 relativePos;
 
         foreach (var item in sortedObjs)
@@ -240,19 +239,19 @@ public class WormAgent : Agent
 
             if(obj != null && obj.CompareTag("Food"))
             {
-                tagObserve = 1;
-                RewardByDistance(obj.gameObject, 4.5f, 0.03f);
+                ObserveType = new float[] { 1, 0, 0};
+                RewardByDistance(obj.gameObject, 4.5f, 0.1f);
             }
 
             else if (obj != null && obj.CompareTag("Wall"))
             {
-                tagObserve = 2;
-                RewardByDistance(obj.gameObject, 2f, -0.03f);
+                ObserveType = new float[] { 0, 1, 0 };
+                RewardByDistance(obj.gameObject, 2f, -0.1f);
             }
 
             else if (obj != null && obj.CompareTag("WormHead"))
             {
-                tagObserve = 3;
+                ObserveType = new float[] { 0, 0, 1 };
             }
 
             else
@@ -260,15 +259,15 @@ public class WormAgent : Agent
                 continue;
             }
 
-            sensor.AddObservation(tagObserve);
+            sensor.AddObservation(ObserveType);
             sensor.AddObservation(relativePos);
             count++;
         }
 
         for (int i = count; i < maxObjects; i++)
         {
-            tagObserve = -1;
-            sensor.AddObservation(tagObserve);
+            ObserveType = ObserveType = new float[] { 0, 0, 0 };
+            sensor.AddObservation(ObserveType);
             sensor.AddObservation(Vector2.zero);
         }
     }
