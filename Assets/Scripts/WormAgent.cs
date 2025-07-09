@@ -240,13 +240,12 @@ public class WormAgent : Agent
             if(obj != null && obj.CompareTag("Food"))
             {
                 ObserveType = new float[] { 1, 0, 0};
-                RewardByDistance(obj.gameObject, 4.5f, 0.1f);
             }
 
             else if (obj != null && obj.CompareTag("Wall"))
             {
                 ObserveType = new float[] { 0, 1, 0 };
-                RewardByDistance(obj.gameObject, 2f, -0.1f);
+                //RewardByDistance(obj.gameObject, 1, -0.1f);
             }
 
             else if (obj != null && obj.CompareTag("WormHead"))
@@ -291,20 +290,20 @@ public class WormAgent : Agent
             moveDirection = lastMoveDirection;
         }
 
-        int isSpeedUP = actions.DiscreteActions[0];
-        if(isSpeedUP == 1 && wormManager.WormScore[wormID] >= 1)
-        {
-            Transform segment = null;
-            if (bodySegments.Count == 0) segment = wormHead;
-            else segment = bodySegments[bodySegments.Count - 1];
+        //int isSpeedUP = actions.DiscreteActions[0];
+        //if(isSpeedUP == 1 && wormManager.WormScore[wormID] >= 1)
+        //{
+        //    Transform segment = null;
+        //    if (bodySegments.Count == 0) segment = wormHead;
+        //    else segment = bodySegments[bodySegments.Count - 1];
 
-            StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
-            speed = 10;
-        }
-        else if(isSpeedUP == 0)
-        {
-            speed = 5;
-        }
+        //    StartCoroutine(wormManager.DecreaseScoreProcess(wormID, foodPrefab, segment, foodGroup));
+        //    speed = 10;
+        //}
+        //else if(isSpeedUP == 0)
+        //{
+        //    speed = 5;
+        //}
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -328,6 +327,6 @@ public class WormAgent : Agent
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, observationRadius);
+        Gizmos.DrawWireSphere(transform.position, 1);
     }
 }
