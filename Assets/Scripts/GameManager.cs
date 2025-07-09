@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         WormManager.instance.DictSet();
 
         // 새 음식 소환
-        foodSummonScript.foodCount = Random.Range(2, 3);
+        foodSummonScript.foodCount = Random.Range(3, 5);
         foodSummonScript.FoodSummon();
     }
 

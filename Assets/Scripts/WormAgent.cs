@@ -245,7 +245,7 @@ public class WormAgent : Agent
             else if (obj != null && obj.CompareTag("Wall"))
             {
                 ObserveType = new float[] { 0, 1, 0 };
-                //RewardByDistance(obj.gameObject, 1, -0.1f);
+                RewardByDistance(obj.gameObject, 1, -0.1f);
             }
 
             else if (obj != null && obj.CompareTag("WormHead"))
